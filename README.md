@@ -1,0 +1,1 @@
+# gerenciador-CloudWalk-BTC-BLUE
