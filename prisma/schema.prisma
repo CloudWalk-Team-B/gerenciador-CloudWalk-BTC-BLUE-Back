@@ -8,14 +8,12 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-
-  name     String
-  email    String    @unique
-  password String
-  cpf      String    @unique
-  isAdmin  Boolean   @default(false) @map("is_admin")
-
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  cpf       String   @unique
+  isAdmin   Boolean  @default(false) @map("is_admin")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -23,12 +21,11 @@ model User {
 }
 
 model Product {
-  id String @id @default(uuid())
-
-  code          Int
-  name          String
-  description   String
-  category      String
-  price         Float
-  inventory     Boolean
+  id          String  @id @default(uuid())
+  code        Int
+  name        String
+  description String
+  category    String
+  price       Float
+  inventory   Boolean
 }

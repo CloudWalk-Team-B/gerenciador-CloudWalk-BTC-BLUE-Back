@@ -1,41 +1,45 @@
-import { ApiProperty } from "@nestjs/swagger";
-
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductDto {
-
   @ApiProperty({
     description: 'Code of product.',
-    example: '154'
+    example: '154',
   })
   code: number;
 
   @ApiProperty({
     description: 'Name of product.',
-    example: 'Peitoral Zee Dog'
+    example: 'Peitoral Zee Dog',
   })
   name: string;
 
   @ApiProperty({
+    description: 'Link image',
+    example: 'Link Image',
+  })
+  image: string;
+
+  @ApiProperty({
     description: 'Description of product.',
-    example: 'Peitoral para cachorros e gatos.'
+    example: 'Peitoral para cachorros e gatos.',
   })
   description: string;
 
   @ApiProperty({
     description: 'Category of product.',
-    example: 'Peitoral'
+    example: 'Peitoral',
   })
   category: string;
 
   @ApiProperty({
     description: 'Price of product.',
-    example: '8000'
+    example: '8000',
   })
   price: number;
 
   @ApiProperty({
     description: 'Disponibility of product.',
-    example: true
+    example: true,
   })
   inventory: boolean;
 }
