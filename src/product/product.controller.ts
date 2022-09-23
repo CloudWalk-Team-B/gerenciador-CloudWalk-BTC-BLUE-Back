@@ -26,8 +26,6 @@ export class ProductController {
   }
 
   @Get('')
-  @UseGuards(AuthGuard())
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'List all the products',
   })
