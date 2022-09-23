@@ -20,6 +20,7 @@ export class ProductService {
     const data: Prisma.ProductCreateInput = {
       code: createDto.code,
       name: createDto.name,
+      image: createDto.image,
       description: createDto.description,
       category: createDto.category,
       price: createDto.price,
