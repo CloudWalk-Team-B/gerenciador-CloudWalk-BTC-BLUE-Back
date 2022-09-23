@@ -24,6 +24,7 @@ model Product {
   id          String  @id @default(uuid())
   code        Int
   name        String
+  image       String
   description String
   category    String
   price       Float
