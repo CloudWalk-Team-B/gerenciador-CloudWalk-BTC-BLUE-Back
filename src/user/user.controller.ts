@@ -59,7 +59,7 @@ export class UserController {
     return this.userService.deleteUser(id, user);
   }
 
-  @Get('details/my-account')
+  @Get('my-account/details')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({
@@ -69,7 +69,7 @@ export class UserController {
     return this.userService.myAccount(user.id);
   }
 
-  @Patch('update/my-account')
+  @Patch('my-account/update')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({
@@ -79,7 +79,7 @@ export class UserController {
     return this.userService.update(user.id, dto);
   }
 
-  @Delete('delete/my-account')
+  @Delete('my-account/delete')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({

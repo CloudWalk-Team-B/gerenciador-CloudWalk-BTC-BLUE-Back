@@ -5,6 +5,7 @@ export class User {
   password: string;
   cpf: string;
   isAdmin: boolean;
+  isManager: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
