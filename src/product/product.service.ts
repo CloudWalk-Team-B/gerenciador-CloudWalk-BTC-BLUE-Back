@@ -72,7 +72,7 @@ export class ProductService {
     });
     const data = {
       success: true,
-      message: "User deleted successfully"
+      message: "Product deleted successfully"
     }
     return data
   }
