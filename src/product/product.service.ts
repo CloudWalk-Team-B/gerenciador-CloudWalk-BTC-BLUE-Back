@@ -4,10 +4,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { isAdmin } from 'src/utils/admin';
 import { handleError } from 'src/utils/handle-error';
 import { notFoundError } from 'src/utils/not-found';
-import { domainToASCII } from 'url';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {

@@ -14,6 +14,9 @@ model User {
   password  String
   cpf       String   @unique
   isAdmin   Boolean  @default(false) @map("is_admin")
+  isManager Boolean  @default(false) @map("is_manager")
+  cart      Cart[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -22,11 +25,29 @@ model User {
 
 model Product {
   id          String  @id @default(uuid())
-  code        Int
+  code        Int     @unique
   name        String
   image       String
   description String
   category    String
   price       Float
   inventory   Boolean
+  cart        Cart[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+@@map("product")
+
+}
+
+model Cart {
+  id          String  @id @default(uuid())
+
+  user        User    @relation(fields:[userId], references:[id])
+  userId      String  @map("user_id")
+  product     Product @relation(fields:[productId], references:[id])
+  productId   String  @map("product_id")
+
+  @@map("cart")
 }
