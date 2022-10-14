@@ -57,6 +57,20 @@ export class CartService {
       return result
   }
 
+  async deleteCart(userId: string) {
+
+    const record =  await this.prisma.cart
+      .deleteMany({ where: { userId: { contains : userId} }})
+      .catch(handleError),
+
+      result = {
+        message: "Cart sucessfully deleted.",
+        record
+      }
+
+      return result
+  }
+
   async myCart(userId: string) {
     const record = await this.prisma.cart.findMany({
       where: { userId },

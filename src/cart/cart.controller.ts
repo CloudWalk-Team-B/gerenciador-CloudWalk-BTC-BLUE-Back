@@ -44,4 +44,16 @@ export class CartController {
   myCart(@LoggedUser() user: User){
     return this.cartService.myCart(user.id)
   }
+
+  @Delete('/deleteCart')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Delete cart.',
+  })
+  deleteCart(
+    @Body() updateCartDto: ProductCartDto,
+    @LoggedUser() user: User){
+    return this.cartService.deleteCart(user.id)
+  }
 }
