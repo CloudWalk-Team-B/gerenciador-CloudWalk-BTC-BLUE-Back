@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { User } from '@prisma/client';
+import { UpdateManyDto } from './dto/update-many-product.dto';
 
 
 @ApiTags('Product')
@@ -24,6 +25,15 @@ export class ProductController {
     @Body() createDto: CreateProductDto) {
     return this.productService.create(createDto, user);
   }
+
+  @Post('updateMany')
+  @ApiOperation({
+    summary: 'Testando'
+  })
+  updateMany(
+    @Body() updateSheet: UpdateManyDto){
+    return this.productService.updateMany(updateSheet)
+    }
 
   @Get('')
   @ApiOperation({

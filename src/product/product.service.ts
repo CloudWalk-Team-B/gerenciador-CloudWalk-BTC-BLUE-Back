@@ -4,8 +4,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { isAdmin } from 'src/utils/admin';
 import { handleError } from 'src/utils/handle-error';
 import { notFoundError } from 'src/utils/not-found';
+import { arrayBuffer } from 'stream/consumers';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
@@ -59,6 +61,21 @@ export class ProductService {
         data,
       })
       .catch(handleError);
+  }
+
+  async updateMany(updateSheet){
+    const productsAtt = []
+    await updateSheet.sheet.map(async (prod) => {
+      const product = await this.prisma.product.findUnique({ where: { code: prod.code }}).catch(handleError)
+        let discount = product.price*(prod.percentage/100)
+        product.price = Math.round((product.price - discount)*100)/100
+        productsAtt.push(product)
+
+        await this.prisma.product.update({
+          where: {code: prod.code},
+          data:{ price: product.price}
+        }).catch(handleError)
+    })
   }
 
   async remove(id: string, user: User) {

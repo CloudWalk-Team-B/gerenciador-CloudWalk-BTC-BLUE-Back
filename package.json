@@ -35,6 +35,7 @@
     "compodoc": "0.0.41",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
+    "exceljs": "^4.3.0",
     "nest": "^0.1.6",
     "nodemon": "^2.0.18",
     "passport": "^0.5.3",
