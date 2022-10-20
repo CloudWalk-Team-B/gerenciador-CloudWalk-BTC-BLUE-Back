@@ -3,6 +3,7 @@ import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { isAdmin } from 'src/utils/admin';
 import { handleError } from 'src/utils/handle-error';
+import { isManager } from 'src/utils/manager';
 import { notFoundError } from 'src/utils/not-found';
 import { arrayBuffer } from 'stream/consumers';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -15,7 +16,7 @@ export class ProductService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createDto: CreateProductDto, user: User) {
-    isAdmin(user);
+   isManager(user)
 
     const data: Prisma.ProductCreateInput = {
       code: createDto.code,
@@ -79,7 +80,7 @@ export class ProductService {
   }
 
   async remove(id: string, user: User) {
-    isAdmin(user);
+    isManager(user)
     await this.findOne(id);
 
     await this.prisma.product.delete({
