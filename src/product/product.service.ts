@@ -2,13 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { isAdmin } from 'src/utils/admin';
+import { excelToArray } from 'src/utils/excel-to-array';
 import { handleError } from 'src/utils/handle-error';
 import { isManager } from 'src/utils/manager';
 import { notFoundError } from 'src/utils/not-found';
-import { arrayBuffer } from 'stream/consumers';
+import Time from 'src/utils/time';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
@@ -65,18 +65,25 @@ export class ProductService {
   }
 
   async updateMany(updateSheet){
-    const productsAtt = []
-    await updateSheet.sheet.map(async (prod) => {
+    const productsAtt = [],
+    newValues = await Promise.resolve(excelToArray(updateSheet))
+
+    await Promise.all(newValues.map(async (prod) => {
+      Time.ms(1000)
       const product = await this.prisma.product.findUnique({ where: { code: prod.code }}).catch(handleError)
         let discount = product.price*(prod.percentage/100)
         product.price = Math.round((product.price - discount)*100)/100
         productsAtt.push(product)
 
+      Time.ms(1000)
+
         await this.prisma.product.update({
           where: {code: prod.code},
           data:{ price: product.price}
         }).catch(handleError)
-    })
+      })
+      )
+      return productsAtt
   }
 
   async remove(id: string, user: User) {
