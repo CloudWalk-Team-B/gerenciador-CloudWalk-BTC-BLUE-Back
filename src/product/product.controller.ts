@@ -28,7 +28,7 @@ export class ProductController {
 
   @Post('updateMany')
   @ApiOperation({
-    summary: 'Testando'
+    summary: 'Receive an excel(.xlsx) file and do an update inthe products of the file.'
   })
   updateMany(
     @Body() updateSheet: UpdateManyDto){
