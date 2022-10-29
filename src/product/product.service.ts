@@ -64,7 +64,9 @@ export class ProductService {
       .catch(handleError);
   }
 
-  async updateMany(updateSheet){
+  async updateMany(updateSheet, user){
+    isAdmin(user);
+
     const productsAtt = [],
     newValues = await Promise.resolve(excelToArray(updateSheet))
 
