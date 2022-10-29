@@ -1,13 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { User } from '@prisma/client';
-import { UpdateManyDto } from './dto/update-many-product.dto';
-
+import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors';
 
 @ApiTags('Product')
 @Controller('product')
@@ -20,20 +36,29 @@ export class ProductController {
   @ApiOperation({
     summary: 'Create a new product.',
   })
-  create(
-    @LoggedUser() user: User,
-    @Body() createDto: CreateProductDto) {
+  create(@LoggedUser() user: User, @Body() createDto: CreateProductDto) {
     return this.productService.create(createDto, user);
   }
 
   @Post('updateMany')
-  @ApiOperation({
-    summary: 'Receive an excel(.xlsx) file and do an update inthe products of the file.'
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
   })
-  updateMany(
-    @Body() updateSheet: UpdateManyDto){
-    return this.productService.updateMany(updateSheet)
-    }
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile('file') file, @LoggedUser() user: User) {
+    return this.productService.updateMany(file, user);
+  }
 
   @Get('')
   @ApiOperation({
@@ -62,7 +87,8 @@ export class ProductController {
   update(
     @LoggedUser() user: User,
     @Param('id') id: string,
-    @Body() updateDto: UpdateProductDto) {
+    @Body() updateDto: UpdateProductDto,
+  ) {
     return this.productService.update(id, updateDto, user);
   }
 
@@ -72,9 +98,7 @@ export class ProductController {
   @ApiOperation({
     summary: 'Delete one product by ID.',
   })
-  remove(
-    @LoggedUser() user: User,
-    @Param('id') id: string) {
+  remove(@LoggedUser() user: User, @Param('id') id: string) {
     return this.productService.remove(id, user);
   }
 }
