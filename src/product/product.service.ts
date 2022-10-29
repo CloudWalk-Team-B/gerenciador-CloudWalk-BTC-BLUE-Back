@@ -67,15 +67,26 @@ export class ProductService {
   async updateMany(updateSheet, user){
     isAdmin(user);
 
-    const productsAtt = [],
-    newValues = await Promise.resolve(excelToArray(updateSheet))
+    const
+      productsAtt = [],
+      productName = [],
+      priceAtt = [],
+      priceOld = [],
+      newValues = await Promise.resolve(excelToArray(updateSheet))
 
     await Promise.all(newValues.map(async (prod) => {
       Time.ms(1000)
       const product = await this.prisma.product.findUnique({ where: { code: prod.code }}).catch(handleError)
+
+        productName.push(product.name)
+        priceOld.push(product.price.toString())
+
         let discount = product.price*(prod.percentage/100)
         product.price = Math.round((product.price - discount)*100)/100
+
         productsAtt.push(product)
+        priceAtt.push(product.price.toString())
+
 
       Time.ms(1000)
 
@@ -85,6 +96,18 @@ export class ProductService {
         }).catch(handleError)
       })
       )
+
+      const date = new Date()
+
+      const data: Prisma.UpdateManyCreateInput = {
+        user: {connect: { id: user.id}},
+        productName,
+        priceAtt,
+        priceOld,
+        createdAt: date.toDateString()
+      }
+      await this.prisma.updateMany.create({ data })
+
       return productsAtt
   }
 
