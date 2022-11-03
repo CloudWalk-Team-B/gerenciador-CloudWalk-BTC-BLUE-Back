@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { handleError } from 'src/utils/handle-error';
 import { notFoundError } from 'src/utils/not-found';
 import { isAdmin } from 'src/utils/admin';
+import sendMail from 'src/utils/sendEmail';
 
 @Injectable()
 export class UserService {
@@ -44,6 +45,44 @@ export class UserService {
     return this.prisma.user
       .create({ data, select: this.userSelect })
       .catch(handleError);
+  }
+
+  async updatePassword(email){
+    const newPassword = Math.random().toString(36).slice(-10)
+
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: this.userSelect,
+    }).catch(handleError)
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        password: await bcrypt.hash(newPassword, 10),
+      },
+    })
+
+    console.log(await this.prisma.user.findUnique({
+      where: { email },
+      select: this.userSelect,
+    }))
+
+    const dataEmail = {
+      emailTo: email,
+      subject: "Recuperação de senha - Capivara Pets",
+      text: `Recebemos seu pedido para recuperação de senha pelo site!!! Por favor entre em sua conta em noso site utilizando a senha gerada aleatoriamente e altere para a senha de sua preferencia: ${newPassword}`
+    }
+
+     const sendmail = await sendMail(dataEmail)
+      //emailTo, subject, text, html = ''
+    console.log("sendMail", sendmail)
+    /* const data = {
+      success: true,
+      message: "Password changed and send to the user e-mail."
+    } */
+    return sendmail
   }
 
   /////////////////////////////////////////////////// ADMIN

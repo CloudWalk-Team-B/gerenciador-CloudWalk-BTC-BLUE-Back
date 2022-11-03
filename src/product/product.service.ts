@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { isAdmin } from 'src/utils/admin';
+import { dataToExcel } from 'src/utils/data-to-excel';
 import { excelToArray } from 'src/utils/excel-to-array';
 import { handleError } from 'src/utils/handle-error';
 import { isManager } from 'src/utils/manager';
@@ -65,8 +66,7 @@ export class ProductService {
   }
 
   async updateMany(updateSheet, user){
-    isAdmin(user);
-
+    console.log("updateSheet", updateSheet)
     const
       productsAtt = [],
       productName = [],
@@ -82,7 +82,7 @@ export class ProductService {
         priceOld.push(product.price.toString())
 
         let discount = product.price*(prod.percentage/100)
-        product.price = Math.round((product.price - discount)*100)/100
+        product.price = Math.round((product.price + discount)*100)/100
 
         productsAtt.push(product)
         priceAtt.push(product.price.toString())
@@ -106,9 +106,11 @@ export class ProductService {
         priceOld,
         createdAt: date.toDateString()
       }
-      await this.prisma.updateMany.create({ data })
+      const attTable = await this.prisma.updateMany.create({ data })
+      console.log(attTable)
+      const attWorksheet = dataToExcel(attTable, user)
 
-      return productsAtt
+      return attWorksheet
   }
 
   async remove(id: string, user: User) {

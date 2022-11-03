@@ -15,6 +15,7 @@ import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
+import { PasswordRecoveryDto } from './dto/password-recovery.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -27,6 +28,14 @@ export class UserController {
   })
   create(@Body() dto: CreateUserDto) {
     return this.userService.create(dto);
+  }
+
+  @Post('password-recovery')
+  @ApiOperation({
+    summary: 'Send a request and an e-mail to recover the password of the user'
+  })
+  updatePassword(@Body() email: PasswordRecoveryDto) {
+    return this.userService.updatePassword(email.email)
   }
 
   @Get('')
