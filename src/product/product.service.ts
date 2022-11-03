@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { isAdmin } from 'src/utils/admin';
+import { dataToExcel } from 'src/utils/data-to-excel';
 import { excelToArray } from 'src/utils/excel-to-array';
 import { handleError } from 'src/utils/handle-error';
 import { isManager } from 'src/utils/manager';
@@ -65,17 +66,27 @@ export class ProductService {
   }
 
   async updateMany(updateSheet, user){
-    isAdmin(user);
-
-    const productsAtt = [],
-    newValues = await Promise.resolve(excelToArray(updateSheet))
+    console.log("updateSheet", updateSheet)
+    const
+      productsAtt = [],
+      productName = [],
+      priceAtt = [],
+      priceOld = [],
+      newValues = await Promise.resolve(excelToArray(updateSheet))
 
     await Promise.all(newValues.map(async (prod) => {
       Time.ms(1000)
       const product = await this.prisma.product.findUnique({ where: { code: prod.code }}).catch(handleError)
+
+        productName.push(product.name)
+        priceOld.push(product.price.toString())
+
         let discount = product.price*(prod.percentage/100)
-        product.price = Math.round((product.price - discount)*100)/100
+        product.price = Math.round((product.price + discount)*100)/100
+
         productsAtt.push(product)
+        priceAtt.push(product.price.toString())
+
 
       Time.ms(1000)
 
@@ -85,7 +96,21 @@ export class ProductService {
         }).catch(handleError)
       })
       )
-      return productsAtt
+
+      const date = new Date()
+
+      const data: Prisma.UpdateManyCreateInput = {
+        user: {connect: { id: user.id}},
+        productName,
+        priceAtt,
+        priceOld,
+        createdAt: date.toDateString()
+      }
+      const attTable = await this.prisma.updateMany.create({ data })
+      console.log(attTable)
+      const attWorksheet = dataToExcel(attTable, user)
+
+      return attWorksheet
   }
 
   async remove(id: string, user: User) {
