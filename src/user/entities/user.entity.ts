@@ -6,6 +6,7 @@ export class User {
   cpf: string;
   isAdmin: boolean;
   isManager: boolean;
+  isAuth: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

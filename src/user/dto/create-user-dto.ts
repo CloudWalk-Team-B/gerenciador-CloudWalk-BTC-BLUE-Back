@@ -55,4 +55,10 @@ export class CreateUserDto {
     example: false,
   })
   isManager: boolean;
+
+  @ApiProperty({
+    description: 'Email authenticated.',
+    example: false,
+  })
+  isAuth: boolean;
 }

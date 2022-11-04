@@ -38,6 +38,14 @@ export class UserController {
     return this.userService.updatePassword(email.email)
   }
 
+  @Get('auth-user/:id')
+  @ApiOperation({
+    summary: 'Authenticate the user by the code sent to the e-mail.'
+  })
+  authUser(@Param('id') code: string){
+    return this.userService.authUser(code)
+  }
+
   @Get('')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
