@@ -6,7 +6,7 @@ import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { CartService } from './cart.service';
 import { ProductCartDto } from './dto/product-cart.dto';
 
-@Controller('cart')
+@Controller('Cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 

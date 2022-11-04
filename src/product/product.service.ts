@@ -97,14 +97,12 @@ export class ProductService {
       })
       )
 
-      const date = new Date()
-
       const data: Prisma.UpdateManyCreateInput = {
         user: {connect: { id: user.id}},
         productName,
         priceAtt,
         priceOld,
-        createdAt: date.toDateString()
+        createdAt: new Date().toDateString()
       }
       const attTable = await this.prisma.updateMany.create({ data })
       console.log(attTable)

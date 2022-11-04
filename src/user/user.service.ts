@@ -13,6 +13,9 @@ import { handleError } from 'src/utils/handle-error';
 import { notFoundError } from 'src/utils/not-found';
 import { isAdmin } from 'src/utils/admin';
 import sendMail from 'src/utils/sendEmail';
+import { passwordRecoveryTemplate } from 'src/utils/templates/password-email';
+import { Prisma } from '@prisma/client';
+import { authUserTemplate } from 'src/utils/templates/auth-template';
 
 @Injectable()
 export class UserService {
@@ -24,6 +27,7 @@ export class UserService {
     cpf: true,
     isAdmin: true,
     isManager: true,
+    isAuth: true,
     createdAt: true,
     updatedAt: true,
   };
@@ -37,20 +41,40 @@ export class UserService {
 
     delete dto.confirmPassword;
 
-    const data: User = {
+    const UserData: User = {
       ...dto,
       password: await bcrypt.hash(dto.password, 10),
     };
 
-    return this.prisma.user
-      .create({ data, select: this.userSelect })
+    const user = await this.prisma.user
+      .create({ data: UserData, select: this.userSelect })
       .catch(handleError);
+
+      const authUserData: Prisma.AuthUserCreateInput = {
+        user: {connect: { id: user.id}},
+        code: Math.random().toString(36).slice(-10),
+        createdAt: new Date()
+      }
+
+    const
+      authUser =  await this.prisma.authUser.create({data: authUserData}),
+      template =  authUserTemplate(user.name, authUser.code),
+      dataEmail = {
+        emailTo: user.email,
+        subject: "Confirmação de conta - Capivara Pets",
+        text:'',
+        html: template.template
+  }
+
+    await sendMail(dataEmail)
+
+    return user
   }
 
   async updatePassword(email){
-    const newPassword = Math.random().toString(36).slice(-10)
-
-    const user = await this.prisma.user.findUnique({
+    const
+      newPassword = Math.random().toString(36).slice(-10),
+      user = await this.prisma.user.findUnique({
       where: { email },
       select: this.userSelect,
     }).catch(handleError)
@@ -69,22 +93,48 @@ export class UserService {
       select: this.userSelect,
     }))
 
-    const dataEmail = {
+
+    const
+      template =  passwordRecoveryTemplate(user.name, newPassword),
+      dataEmail = {
       emailTo: email,
       subject: "Recuperação de senha - Capivara Pets",
-      text: `Recebemos seu pedido para recuperação de senha pelo site!!! Por favor entre em sua conta em noso site utilizando a senha gerada aleatoriamente e altere para a senha de sua preferencia: ${newPassword}`
+      text:'',
+      html: template.template
     }
 
-     const sendmail = await sendMail(dataEmail)
-      //emailTo, subject, text, html = ''
-    console.log("sendMail", sendmail)
-    /* const data = {
+    await sendMail(dataEmail).catch(handleError)
+
+    const data = {
       success: true,
       message: "Password changed and send to the user e-mail."
-    } */
-    return sendmail
+    }
+    return data
   }
 
+  async authUser(code: string){
+    const authUser = await this.prisma.authUser.findFirst({ where: { code } }).catch(handleError)
+
+    if(!authUser) return
+
+    await this.prisma.user.update({
+      where: {
+        id: authUser.userId
+      },
+      data: {
+        isAuth: true,
+      },
+    })
+
+    await this.prisma.authUser.delete({
+      where: { id: authUser.id}
+    })
+
+    return {
+      succes: true,
+      message: `Usuário autenticado com sucesso.`
+    }
+  }
   /////////////////////////////////////////////////// ADMIN
 
   async findAll(user: User) {
