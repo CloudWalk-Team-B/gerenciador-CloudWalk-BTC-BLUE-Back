@@ -102,10 +102,8 @@ export class UserService {
       text:'',
       html: template.template
     }
-    console.log("dataEmail", dataEmail)
-    const teste = await sendMail(dataEmail).catch(handleError)
 
-    console.log("teste", teste)
+    await sendMail(dataEmail).catch(handleError)
 
     const data = {
       success: true,
