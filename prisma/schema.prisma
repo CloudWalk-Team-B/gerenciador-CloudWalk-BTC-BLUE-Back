@@ -15,60 +15,56 @@ model User {
   cpf        String       @unique
   isAdmin    Boolean      @default(false) @map("is_admin")
   isManager  Boolean      @default(false) @map("is_manager")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
   isAuth     Boolean      @default(false) @map("is_auth")
+  auth       AuthUser[]
   cart       Cart[]
   updateMany UpdateMany[]
-  auth       AuthUser[]
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("user")
 }
 
 model Product {
-  id          String  @id @default(uuid())
-  code        Int     @unique
+  id          String   @id @default(uuid())
+  code        Int      @unique
   name        String
   image       String
   description String
   category    String
   price       Float
   inventory   Boolean
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
   cart        Cart[]
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("product")
 }
 
 model Cart {
-  id String @id @default(uuid())
-
-  user      User    @relation(fields: [userId], references: [id])
+  id        String  @id @default(uuid())
   userId    String  @map("user_id")
-  product   Product @relation(fields: [productId], references: [id])
   productId String  @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
   @@map("cart")
 }
 
 model UpdateMany {
-  id String @id @default(uuid())
-
-  user        User   @relation(fields: [userId], references: [id])
+  id          String @id @default(uuid())
   userId      String @map("user_id")
-  productName Json[]
+  createdAt   String
   priceAtt    Json[]
   priceOld    Json[]
-  createdAt   String
+  productName Json[]
+  user        User   @relation(fields: [userId], references: [id])
 }
 
 model AuthUser {
   id        String   @id @default(uuid())
-  code      String
-  user      User     @relation(fields: [userId], references: [id])
   userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
+  code      String
+  user      User     @relation(fields: [userId], references: [id])
 }
