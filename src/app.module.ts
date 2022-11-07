@@ -13,7 +13,7 @@ import { CartModule } from './cart/cart.module';
     UserModule,
     PrismaModule,
     ProductModule,
-    CartModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [AppService],

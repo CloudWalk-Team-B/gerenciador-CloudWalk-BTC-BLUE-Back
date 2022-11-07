@@ -152,7 +152,6 @@ export class UserService {
   }
 
   async findOne(id: string, user: User) {
-    isAdmin(user);
 
     const record = await this.prisma.user.findUnique({
       where: { id },
