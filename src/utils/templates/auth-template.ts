@@ -22,9 +22,9 @@ export function authUserTemplate(name, code) {
         <p>Ola ${name},</p>
         <p style="text-align: center" >Sua conta em noso site foi criada com sucesso </p>
         <p>Para ativar sua conta, por favor clique no botão abaixo, ou acesse pelo link no final da mensagem</p>
-          <div style="color:white ; background-color: rgb(95,26,73); width: 15%; text-align: center; height: 40px; border-radius: 50px; display: flex; justify-content: center; align-items: center; display: inline-block; padding-top: 6px; width: 150px; "><a href='http://localhost:3333/user/auth-user/${code}'>Clique Aqui</a></div>
+          <div style="color:white ; background-color: rgb(95,26,73); width: 15%; text-align: center; height: 40px; border-radius: 50px; display: flex; justify-content: center; align-items: center; display: inline-block; padding-top: 6px; width: 150px; "><a href='https://capivara-shop.vercel.app/validate-user/${code}'>Clique Aqui</a></div>
         <p>Caso o botão não funcione, por favor, utilize o link abaixo: <br>
-        http://localhost:3333/user/auth-user/${code}
+        https://capivara-shop.vercel.app/validate-user/${code}
         </p>
       </div>
     </body>
