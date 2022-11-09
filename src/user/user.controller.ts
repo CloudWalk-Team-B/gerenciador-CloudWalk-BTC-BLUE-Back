@@ -60,7 +60,7 @@ export class UserController {
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Only Admin - Find one user by ID.',
+    summary: 'Find one user by ID.',
   })
   findOne(@LoggedUser() user: User, @Param('id') id: string) {
     return this.userService.findOne(id, user);

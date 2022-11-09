@@ -135,7 +135,6 @@ export class UserService {
       message: `Usuário autenticado com sucesso.`
     }
   }
-  /////////////////////////////////////////////////// ADMIN
 
   async findAll(user: User) {
     isAdmin(user);
