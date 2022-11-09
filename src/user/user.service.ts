@@ -52,7 +52,7 @@ export class UserService {
 
       const authUserData: Prisma.AuthUserCreateInput = {
         user: {connect: { id: user.id}},
-        code: Math.random().toString(36).slice(-10),
+        code: Math.random().toString(36).slice(-9),
         createdAt: new Date()
       }
 
