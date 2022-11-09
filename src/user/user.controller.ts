@@ -16,6 +16,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { PasswordRecoveryDto } from './dto/password-recovery.dto';
+import { NewPasswordDto } from './dto/newPassword.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -94,6 +95,14 @@ export class UserController {
   })
   update(@LoggedUser() user: User, @Body() dto: UpdateUserDto) {
     return this.userService.update(user.id, dto);
+  }
+
+  @Patch('/updatePassword')
+  @ApiOperation({
+    summary: 'Edit data from logged account.',
+  })
+  updatePass(@Body() data: NewPasswordDto) {
+    return this.userService.updatePass(data);
   }
 
   @Delete('my-account/delete')

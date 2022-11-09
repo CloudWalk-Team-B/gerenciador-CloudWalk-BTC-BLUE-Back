@@ -112,6 +112,29 @@ export class UserService {
     return data
   }
 
+
+  async updatePass(data){
+
+    const user = await this.prisma.user.findUnique({where: {id: data.id}})
+
+    if (data.password !== data.confirmPassword) {
+      throw new BadRequestException('As senhas informadas não são iguais.');
+    }
+
+    delete data.confirmPassword;
+
+    user.password = await bcrypt.hash(data.password, 10)
+
+    return this.prisma.user
+      .update({
+        where: { id: user.id },
+        data: user,
+        select: this.userSelect,
+      })
+      .catch(handleError);
+  }
+
+
   async authUser(code: string){
     const authUser = await this.prisma.authUser.findFirst({ where: { code } }).catch(handleError)
 
@@ -187,14 +210,6 @@ export class UserService {
 
   async update(userId: string, dto: UpdateUserDto) {
     await this.myAccount(userId);
-
-    if (dto.password) {
-      if (dto.password != dto.confirmPassword) {
-        throw new BadRequestException('As senhas informadas não são iguais.');
-      }
-    }
-
-    delete dto.confirmPassword;
 
     const data: Partial<User> = { ...dto };
 
