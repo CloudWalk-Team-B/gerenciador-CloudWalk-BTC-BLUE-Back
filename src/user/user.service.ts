@@ -213,10 +213,6 @@ export class UserService {
 
     const data: Partial<User> = { ...dto };
 
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, 10);
-    }
-
     return this.prisma.user
       .update({
         where: { id: userId },
