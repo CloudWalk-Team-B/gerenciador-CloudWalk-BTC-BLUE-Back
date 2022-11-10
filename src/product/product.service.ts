@@ -66,7 +66,10 @@ export class ProductService {
   }
 
   async updateMany(updateSheet, user){
+    console.log("\n\n\n\n\n")
     console.log("updateSheet", updateSheet)
+    console.log("\n\n\n\n\n")
+
     const
       productsAtt = [],
       productName = [],

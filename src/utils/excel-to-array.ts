@@ -9,6 +9,10 @@ function getCellValue(row: ExcelJS.Row, cellIndex: number): number {
 }
 
 export async function excelToArray(data) {
+  console.log("\n\n\n\n\n")
+  console.log("data", data)
+  console.log("\n\n\n\n\n")
+
   const workbook = new Workbook();
   const content = await workbook.xlsx.load(data.buffer);
   const worksheet = content.worksheets[0];
