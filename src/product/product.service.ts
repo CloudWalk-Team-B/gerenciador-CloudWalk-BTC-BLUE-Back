@@ -66,9 +66,6 @@ export class ProductService {
   }
 
   async updateMany(updateSheet, user){
-    console.log("\n\n\n\n\n")
-    console.log("updateSheet", updateSheet)
-    console.log("\n\n\n\n\n")
 
     const
       productsAtt = [],
@@ -108,10 +105,12 @@ export class ProductService {
         createdAt: new Date().toDateString()
       }
       const attTable = await this.prisma.updateMany.create({ data })
-      console.log(attTable)
-      const attWorksheet = dataToExcel(attTable, user)
 
-      return attWorksheet
+      return {
+        success: true,
+        attTable,
+        user
+      }
   }
 
   async remove(id: string, user: User) {
