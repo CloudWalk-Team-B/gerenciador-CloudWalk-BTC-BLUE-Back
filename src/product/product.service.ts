@@ -102,7 +102,7 @@ export class ProductService {
         productName,
         priceAtt,
         priceOld,
-        createdAt: new Date().toDateString()
+        createdAt: new Date().toLocaleString()
       }
       const attTable = await this.prisma.updateMany.create({ data })
 
