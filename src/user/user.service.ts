@@ -88,11 +88,6 @@ export class UserService {
       },
     })
 
-    console.log(await this.prisma.user.findUnique({
-      where: { email },
-      select: this.userSelect,
-    }))
-
 
     const
       template =  passwordRecoveryTemplate(user.name, newPassword),
